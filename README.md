@@ -216,6 +216,19 @@ docker build \
 > 镜像构建依赖外网访问 GitHub Release。若网络受限，可先手动下载两个资产，
 > 或用 `docker build --build-arg REPO=<你的镜像仓库>` 指向可访问的发布源。
 
+### 自动发布 Release
+
+仓库已配置 `.github/workflows/release.yml`：推送 `v*` 标签时，Actions 会自动
+构建前端与三个平台的二进制、生成 `checksums.txt`，并创建 GitHub Release。
+
+```bash
+git tag -a v0.1.0 -m "AstraMail v0.1.0"
+git push origin v0.1.0
+```
+
+发布完成后即可用上面的 Docker 命令构建镜像。本地也可以执行 `make release`
+在 `dist/` 目录生成同样的产物（Windows 使用 `scripts/release.ps1`）。
+
 ### 环境变量
 
 后端从仓库根目录的 `.env` 或系统环境变量读取配置：

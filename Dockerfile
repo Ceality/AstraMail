@@ -23,7 +23,8 @@ RUN set -eux; \
     curl -fsSL --retry 3 -o checksums.txt "${base}/checksums.txt"; \
     expected="$(awk -v f="${asset}" '$2 == f || $2 == "*" f { print $1 }' checksums.txt)"; \
     test -n "${expected}"; \
-    echo "${expected}  ${asset}" | sha256sum -c -; \
+    echo "${expected}  ${asset}" > /tmp/expected.sha256; \
+    sha256sum -c /tmp/expected.sha256; \
     mv "${asset}" /out/astramail; \
     chmod 0755 /out/astramail
 
