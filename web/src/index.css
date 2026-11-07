@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+@theme {
+  /* ========== 高级灰白色板 ========== */
+  /* 主色: 墨黑 Ink（主操作、强调） */
+  --color-ink-50: #fafafa;
+  --color-ink-100: #f4f4f5;
+  --color-ink-200: #e4e4e7;
+  --color-ink-300: #d4d4d8;
+  --color-ink-400: #a1a1aa;
+  --color-ink-500: #71717a;
+  --color-ink-600: #52525b;
+  --color-ink-700: #3f3f46;
+  --color-ink-800: #27272a;
+  --color-ink-900: #18181b;
+  --color-ink-950: #09090b;
+
+  /* 冷灰 Cold（边框、背景层次，带一丝蓝调，比纯灰更冷冽） */
+  --color-cold-50: #f8f9fa;
+  --color-cold-100: #f1f3f5;
+  --color-cold-200: #e6e9ec;
+  --color-cold-300: #d3d9de;
+  --color-cold-400: #9aa5ad;
+  --color-cold-500: #64707a;
+  --color-cold-600: #4b565f;
+  --color-cold-700: #39424a;
+  --color-cold-800: #232a31;
+  --color-cold-900: #151a1f;
+
+  /* 点缀: 冰蓝 Ice（仅用于激活态/链接，克制使用） */
+  --color-ice-50: #f0f7ff;
+  --color-ice-100: #e0eefe;
+  --color-ice-500: #3b82f6;
+  --color-ice-600: #2563eb;
+
+  /* 功能色（低饱和，克制） */
+  --color-success: #16a34a;
+  --color-success-soft: #f0fdf4;
+  --color-danger: #dc2626;
+  --color-danger-soft: #fef2f2;
+  --color-warning: #d97706;
+  --color-warning-soft: #fffbeb;
+
+  /* ========== 大圆角体系 ========== */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-2xl: 28px;
+  --radius-3xl: 32px;
+
+  /* ========== 克制的阴影 ========== */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-soft: 0 1px 2px 0 rgb(0 0 0 / 0.05), 0 1px 3px 0 rgb(0 0 0 / 0.03);
+  --shadow-pop: 0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 4px -1px rgb(0 0 0 / 0.04);
+  --shadow-modal: 0 12px 32px -8px rgb(0 0 0 / 0.14), 0 4px 12px -4px rgb(0 0 0 / 0.06);
+
+  /* ========== 动画曲线 ========== */
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-swift: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ========== 字体 ========== */
+  --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", Consolas, monospace;
+}
+
+/* ========== 全局基础 ========== */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  color: var(--color-ink-900);
+}
+
+/* ========== 页面背景：统一纯白，避免分区之间出现色差接缝 ========== */
+.app-bg {
+  background: #ffffff;
+}
+
+/* ========== 面板表面 ========== */
+.surface {
+  background: #ffffff;
+  border: 1px solid var(--color-cold-200);
+}
+
+.surface-subtle {
+  background: var(--color-cold-50);
+  border: 1px solid var(--color-cold-200);
+}
+
+/* ========== 滚动条美化 ========== */
+.scroll-slim {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-cold-300) transparent;
+  /* 始终预留滚动条槽位：避免内容从无滚动条切到有滚动条时宽度突变 */
+  scrollbar-gutter: stable;
+}
+.scroll-slim::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.scroll-slim::-webkit-scrollbar-thumb {
+  background: var(--color-cold-300);
+  border-radius: 99px;
+}
+.scroll-slim::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cold-400);
+}
+.scroll-slim::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ========== 文本截断 ========== */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ========== 骨架屏微光（灰阶） ========== */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-cold-100) 25%,
+    var(--color-cold-200) 50%,
+    var(--color-cold-100) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+/* ========== 协议徽标（灰阶区分） ========== */
+.badge-imap {
+  background: var(--color-cold-100);
+  color: var(--color-cold-600);
+  border: 1px solid var(--color-cold-200);
+}
+.badge-graph {
+  background: var(--color-ink-900);
+  color: #ffffff;
+  border: 1px solid var(--color-ink-900);
+}
+
+/* ========== 无障碍：尊重减少动态偏好 ========== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

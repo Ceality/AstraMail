@@ -1,0 +1,13 @@
+.git
+.github
+.gitignore
+.env
+.env.*
+!.env.example
+bin
+dist
+web/node_modules
+web/dist
+*.exe
+*.log
+README.md

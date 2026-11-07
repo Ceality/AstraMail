@@ -1,0 +1,88 @@
+version: "2"
+
+run:
+  go: "1.25"
+
+linters:
+  # 大厂做法：默认全开，再按需禁用
+  default: all
+  disable:
+    # 以下规则在实际项目中误报率高或与 Go 新版冲突，大厂也会禁用
+    - cyclop           # 与 gocyclo 功能重复
+    - err113           # 禁止动态创建 error，对大多数项目过于激进
+    - exhaustruct      # 强制结构体全字段初始化，不现实
+    - exhaustruct_v5   # 同上；v2.12+ 的 exhaustruct_v5 是独立 linter，必须一并禁用
+    - gochecknoglobals # 全局变量在某些场景合理（如配置）
+    - varnamelen       # 变量名长度限制太主观
+    - wrapcheck        # 强制外部 error 必须 wrap，容易过度包装
+    - depguard         # 需要额外配置白名单，新手容易卡住
+    - gomodguard       # 已被 gomodguard_v2 取代，留着只会产生弃用告警
+    - wsl              # 已被 wsl_v5 取代，两者规则互相冲突（golangci-lint 自身会跳过冲突修复）
+
+  settings:
+    # Uber 式零容忍：不放过任何问题
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+
+    # 复杂度控制（微软也有类似阈值）
+    gocyclo:
+      min-complexity: 15   # 比 Uber 默认 30 严一倍
+    gocognit:
+      min-complexity: 20
+    funlen:
+      lines: 60
+      statements: 40
+
+    # revive：启用全部规则，但豁免少数
+    revive:
+      enable-all-rules: true
+      rules:
+        - name: line-length-limit
+          disabled: true    # 行长度交给 golines 处理
+        - name: add-constant
+          disabled: true    # 强制提取常量过于机械
+        - name: max-public-structs
+          disabled: true    # 限制导出结构体数量没有实际意义
+        - name: cognitive-complexity
+          disabled: true    # 与 gocognit 重复，且默认阈值 7 会覆盖下面的 gocognit 配置
+        - name: cyclomatic
+          disabled: true    # 与 gocyclo 重复，同理（禁用 cyclop 也是这个理由）
+
+    # gocritic：hugeParam / rangeValCopy 等性能类检查默认即关闭，无需再声明
+
+    # 接口 JSON 字段统一 camelCase（驼峰式）
+    tagliatelle:
+      case:
+        rules:
+          json: camel
+        overrides:
+          # 例外：Graph 的请求/响应结构体直接对应微软 API 的 camelCase 字段
+          # pkg 用相对模块根目录的包路径匹配
+          - pkg: internal/service/graph
+            rules:
+              json: camel
+
+issues:
+  # Uber 式配置：默认排除全部关闭，所有问题都报告
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+formatters:
+  enable:
+    - gofumpt          # 比 gofmt 更严格的格式
+    - goimports        # 自动管理 import
+    - gci              # import 分组排序
+  settings:
+    # gofumpt 需要知道模块路径，否则会把本模块的 import 合并进标准库分组，
+    # 与 goimports/gci 的分组规则互相冲突
+    gofumpt:
+      module-path: Astramail/
+    goimports:
+      local-prefixes:
+        - astramail
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(astramail)

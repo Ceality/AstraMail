@@ -1,0 +1,23 @@
+services:
+  astramail:
+    build:
+      context: .
+      args:
+        VERSION: "0.1.0"
+        REPO: "Ceality/AstraMail"
+    image: astramail:0.1.0
+    container_name: astramail
+    restart: unless-stopped
+    init: true
+    ports:
+      - "3001:3001"
+    environment:
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 3001
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
